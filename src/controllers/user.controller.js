@@ -60,7 +60,7 @@ export const updateUser = async (req, res) => {
     const user = await UserModel.findByIdAndUpdate(
       userId,
       { username, email, password },
-      { returnDocument: "after" },
+      { returnDocument: "after", runValidators: true },
     ).select("-password");
 
     const updatedProfile = await ProfileModel.findOneAndUpdate(
