@@ -1,7 +1,7 @@
 import { model, Schema, Types } from "mongoose";
 
 const profileSchema = new Schema({
-  user: { type: Types.ObjectId, ref: "User", required: true },
+  user_id: { type: Types.ObjectId, ref: "User", required: true },
   bio: { type: String, maxlength: 250, default: "" },
   config: {
     private: { type: Boolean, default: false },
