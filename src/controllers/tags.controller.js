@@ -1,5 +1,6 @@
 import { matchedData } from "express-validator";
 import { TagModel } from "../models/tags.model.js";
+import { PostModel } from "../models/post.model.js";
 
 export const createTag = async (req, res) => {
   try {
@@ -66,5 +67,40 @@ export const deleteTag = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error interno en el servidor" });
+  }
+};
+
+export const addTag = async (req, res) => {
+  try {
+    const { id, tagId } = matchedData(req, {
+      locations: ["params"],
+    });
+
+    const post = await PostModel.findByIdAndUpdate(
+      id,
+      {
+        $addToSet: { tags: tagId },
+      },
+      {
+        returnDocument: "after",
+        runValidators: true,
+      },
+    ).populate("tags", "nombre descripcion");
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Publicación no encontrada",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Etiqueta agregada correctamente",
+      data: post,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Error al agregar la etiqueta",
+    });
   }
 };

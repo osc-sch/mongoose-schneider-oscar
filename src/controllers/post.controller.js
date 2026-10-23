@@ -20,7 +20,7 @@ export const createPost = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
   try {
-    const posts = await PostModel.find().populate("author", "name email");
+    const posts = await PostModel.find().populate("author", "name email").populate("tags", "nombre descripcion");
     return res.status(200).json(posts);
   } catch (error) {
     console.log(error);
@@ -30,8 +30,11 @@ export const getAllPosts = async (req, res) => {
 
 export const getPostById = async (req, res) => {
   try {
-    const { postId } = req.params;  
-    const post = await PostModel.findById(postId).populate("author", "name email");
+    const { postId } = req.params;
+    const post = await PostModel.findById(postId).populate(
+      "author",
+      "name email",
+    );
     if (!post) {
       return res.status(404).json({ message: "Post no encontrado" });
     }
@@ -51,7 +54,7 @@ export const updatePost = async (req, res) => {
     const updatedPost = await PostModel.findByIdAndUpdate(
       postId,
       { title, content, author },
-      { new: true },
+      { returnDocument: "after" },
     );
     return res.status(200).json(updatedPost);
   } catch (error) {
