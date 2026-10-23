@@ -47,7 +47,7 @@ export const validateAddTag = [
 
       const duplicado = await PostModel.exists({
         _id: req.params.id,
-        etiquetas: tagId,
+        tags: tagId,
       });
 
       if (duplicado) {
@@ -56,4 +56,9 @@ export const validateAddTag = [
 
       return true;
     }),
+];
+
+export const validateRemoveTag = [
+  param("id").isMongoId().withMessage("ID de publicación inválido"),
+  param("tagId").isMongoId().withMessage("ID de etiqueta inválido"),
 ];

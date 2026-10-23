@@ -34,7 +34,7 @@ export const getPostById = async (req, res) => {
     const post = await PostModel.findById(postId).populate(
       "author",
       "name email",
-    );
+    ).populate("tags", "nombre descripcion");
     if (!post) {
       return res.status(404).json({ message: "Post no encontrado" });
     }

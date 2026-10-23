@@ -104,3 +104,38 @@ export const addTag = async (req, res) => {
     });
   }
 };
+
+export const removeTag = async (req, res) => {
+  try {
+    const { id, tagId } = matchedData(req, {
+      locations: ["params"],
+    });
+
+    const post = await PostModel.findByIdAndUpdate(
+      id,
+      {
+        $pull: { tags: tagId },
+      },
+      {
+        returnDocument: "after",
+        runValidators: true,
+      },
+    ).populate("tags", "nombre descripcion");
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Publicación no encontrada",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Etiqueta desvinculada correctamente",
+      data: post,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Error al quitar la etiqueta",
+    });
+  }
+};
